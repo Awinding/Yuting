@@ -45,69 +45,54 @@ body {
   padding-bottom: max(12px, env(safe-area-inset-bottom));
 }
 
-.container {
-  max-width: 520px;
-  margin: 0 auto;
-}
+.container { max-width: 520px; margin: 0 auto; }
 
-/* ==================== Timestamp ==================== */
+/* ==================== Timestamp (放大、置中、拿掉 REC) ==================== */
 .timestamp {
   background: var(--bg);
   color: #fff;
-  padding: 16px 20px;
+  padding: 26px 16px;
   border-radius: 14px;
   text-align: center;
   margin-bottom: 10px;
   box-shadow: var(--shadow-md);
   position: relative;
-  overflow: hidden;
-}
-.timestamp::before {
-  content: 'REC';
-  position: absolute;
-  top: 12px;
-  left: 14px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  font-weight: 700;
-  color: #ef4444;
-  letter-spacing: 2px;
-  padding-left: 12px;
-}
-.timestamp::after {
-  content: '';
-  position: absolute;
-  top: 16px;
-  left: 14px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #ef4444;
-  animation: blink 1.2s infinite;
-}
-@keyframes blink { 50% { opacity: 0.3; } }
-
-.ts-time {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.1;
 }
 .ts-date {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  color: #a1a1aa;
-  margin-top: 2px;
-  letter-spacing: 1px;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
 }
 
-/* ==================== Member Number Input ==================== */
+/* Sound toggle — 縮小 & 嵌在時間戳右上角 */
+.sound-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  color: white;
+  border: none;
+  font-size: 13px;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  overflow: hidden;
+}
+.sound-toggle.off { opacity: 0.4; }
+
+/* ==================== Member Input (連貫顯示、放大) ==================== */
 .member-input {
   background: var(--surface);
   border-radius: 14px;
-  padding: 14px 18px;
+  padding: 18px 18px;
   margin-bottom: 10px;
   box-shadow: var(--shadow-sm);
   border: 1.5px solid var(--border);
@@ -115,35 +100,35 @@ body {
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  transition: border-color 0.15s, transform 0.08s;
+  transition: border-color 0.15s, transform 0.08s, box-shadow 0.15s;
+  position: relative;
+  overflow: hidden;
+  min-height: 72px;
 }
 .member-input:active { transform: scale(0.99); }
-.member-input.has-value { border-color: var(--accent-price); background: #eff6ff; }
-.member-input-left { display: flex; flex-direction: column; gap: 2px; }
-.member-input-label {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--ink-faint);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
+.member-input.has-value {
+  border-color: var(--accent-price);
+  background: #eff6ff;
+  box-shadow: 0 2px 10px rgba(37, 99, 235, 0.15);
 }
-.member-input.has-value .member-input-label { color: var(--accent-price-deep); }
-.member-input-hint {
-  font-size: 13px;
+.member-input-text {
+  font-size: 24px;
+  font-weight: 800;
   color: var(--ink-soft);
-  font-weight: 500;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: nowrap;
+  letter-spacing: 0.5px;
 }
-.member-input-right { display: flex; align-items: center; }
-.member-input-value {
+.member-input.has-value .member-input-text { color: var(--accent-price-deep); }
+.mi-num {
   font-family: 'JetBrains Mono', monospace;
   font-size: 32px;
   font-weight: 800;
-  color: var(--ink-faint);
-  font-variant-numeric: tabular-nums;
   letter-spacing: 3px;
+  margin-left: 2px;
 }
-.member-input.has-value .member-input-value { color: var(--accent-price-deep); }
-.member-input-edit {
+.mi-edit {
   font-size: 12px;
   color: var(--accent-price);
   font-weight: 700;
@@ -151,6 +136,7 @@ body {
   background: #dbeafe;
   border-radius: 20px;
   margin-left: 8px;
+  flex-shrink: 0;
 }
 
 /* ==================== Total Display ==================== */
@@ -169,15 +155,12 @@ body {
   margin-bottom: 6px;
 }
 .display-label {
-  font-size: 12px;
-  color: var(--ink-faint);
-  font-weight: 500;
-  letter-spacing: 0.5px;
+  font-size: 12px; color: var(--ink-faint);
+  font-weight: 500; letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 .display-qty {
-  font-size: 14px;
-  color: var(--ink-soft);
+  font-size: 14px; color: var(--ink-soft);
   font-weight: 700;
   background: var(--surface-alt);
   padding: 4px 10px;
@@ -185,30 +168,24 @@ body {
 }
 .display-qty strong {
   font-family: 'JetBrains Mono', monospace;
-  color: var(--ink);
-  font-weight: 800;
+  color: var(--ink); font-weight: 800;
 }
-
 .display-amount {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 52px;
-  font-weight: 800;
-  color: var(--ink);
-  text-align: right;
-  line-height: 1;
-  letter-spacing: -1px;
+  font-size: 52px; font-weight: 800;
+  color: var(--ink); text-align: right;
+  line-height: 1; letter-spacing: -1px;
   font-variant-numeric: tabular-nums;
   margin: 4px 0 8px;
+  transition: transform 0.2s ease;
 }
+.display-amount.bump { transform: scale(1.04); }
 .display-amount .currency {
-  font-size: 28px;
-  font-weight: 500;
+  font-size: 28px; font-weight: 500;
   color: var(--ink-faint);
   margin-right: 6px;
   vertical-align: 8px;
 }
-
-/* 明細：完整顯示，不再限高滾動 */
 .items-list {
   border-top: 1px dashed var(--border);
   padding-top: 10px;
@@ -230,13 +207,17 @@ body {
   padding: 5px 0;
   font-size: 14px;
   color: var(--ink-soft);
+  animation: rowIn 0.25s ease-out;
+}
+@keyframes rowIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 .item-row + .item-row { border-top: 1px solid #f4f4f5; }
 .item-row .label { display: flex; align-items: center; gap: 8px; }
 .item-row .label .tag {
   display: inline-block;
-  width: 6px;
-  height: 6px;
+  width: 6px; height: 6px;
   border-radius: 50%;
   background: var(--accent-price);
   flex-shrink: 0;
@@ -244,6 +225,7 @@ body {
 .item-row.manual .label .tag { background: var(--accent-calc); }
 .item-row.discount .label .tag { background: var(--accent-discount); }
 .item-row.credit-row .label .tag { background: var(--accent-danger); }
+.item-row.deduct-row .label .tag { background: var(--accent-danger); }
 .item-row .val {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
@@ -251,10 +233,12 @@ body {
   font-variant-numeric: tabular-nums;
 }
 .item-row.discount .val { color: var(--accent-discount); }
-.item-row.credit-row .val { color: var(--accent-danger); font-weight: 800; }
-.item-row.credit-row .label { color: var(--accent-danger); font-weight: 700; }
+.item-row.credit-row .val,
+.item-row.deduct-row .val { color: var(--accent-danger); font-weight: 800; }
+.item-row.credit-row .label,
+.item-row.deduct-row .label { color: var(--accent-danger); font-weight: 700; }
 
-/* ==================== Button Base ==================== */
+/* ==================== Button Base with effects ==================== */
 button {
   border: none;
   padding: 16px 8px;
@@ -262,12 +246,41 @@ button {
   font-family: inherit;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.1s ease, filter 0.1s ease;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.12s cubic-bezier(0.4, 0, 0.2, 1), filter 0.12s, box-shadow 0.12s;
   touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
+  isolation: isolate;
 }
-button:active { transform: scale(0.96); filter: brightness(0.92); }
+button:active {
+  transform: scale(0.93);
+  filter: brightness(0.88);
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  transform: translate(-50%, -50%) scale(0);
+  animation: rippleAni 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes rippleAni {
+  to { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+}
+.action-btn .ripple,
+.calc-num .ripple { background: rgba(37, 99, 235, 0.25); }
+.action-btn.reset .ripple { background: rgba(220, 38, 38, 0.25); }
+button > * { position: relative; z-index: 1; }
+
+@keyframes pressGlow {
+  0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5); }
+  100% { box-shadow: 0 0 0 12px rgba(255,255,255,0); }
+}
+button.flash { animation: pressGlow 0.4s ease-out; }
 
 .grid { display: grid; gap: 8px; margin-bottom: 10px; }
 .g-2 { grid-template-columns: repeat(2, 1fr); }
@@ -279,30 +292,39 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
   background: linear-gradient(180deg, #3b82f6 0%, var(--accent-price) 100%);
   color: white;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 26px;
-  font-weight: 800;
+  font-size: 26px; font-weight: 800;
   padding: 22px 4px;
-  position: relative;
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
-  min-height: 78px;
+  min-height: 82px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .quick-btn .qty-badge {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 6px; right: 6px;
   background: rgba(255,255,255,0.25);
-  backdrop-filter: blur(4px);
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 7px;
+  font-size: 20px;
+  font-weight: 800;
+  padding: 3px 11px;
   border-radius: 20px;
-  min-width: 22px;
+  min-width: 36px;
+  text-align: center;
+  line-height: 1;
+  transition: all 0.2s ease;
 }
-.quick-btn .qty-badge.has { background: rgba(255,255,255,0.95); color: var(--accent-price-deep); }
+.quick-btn .qty-badge.has {
+  background: white;
+  color: var(--accent-price-deep);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+}
+.quick-btn .qty-badge.pop { animation: badgePop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes badgePop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
 
 /* ==================== Discount Buttons ==================== */
 .discount-btn {
@@ -311,13 +333,18 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
   font-size: 15px;
   padding: 14px 8px;
   box-shadow: 0 2px 8px rgba(124, 58, 237, 0.2);
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 2px;
-  min-height: 66px;
+  min-height: 72px;
+}
+.discount-btn.discount-big {
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 8px;
+  padding-left: 16px;
 }
 .discount-btn.active {
   background: linear-gradient(180deg, var(--accent-discount-deep) 0%, #4c1d95 100%);
@@ -326,26 +353,23 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
 .discount-btn.active::after {
   content: '✓';
   position: absolute;
-  top: 4px;
-  right: 8px;
+  top: 4px; right: 8px;
   font-size: 12px;
   background: white;
   color: var(--accent-discount-deep);
-  width: 18px;
-  height: 18px;
+  width: 18px; height: 18px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 900;
+  z-index: 2;
 }
 .discount-btn .d-sub {
   font-size: 11px;
   font-weight: 500;
   opacity: 0.9;
 }
-
-/* 購物金已折抵 — 紅字大字顯示 */
 .discount-btn .d-sub.has-credit {
   display: inline-block;
   background: white;
@@ -387,13 +411,11 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
   padding: 0 4px;
 }
 .calc-title {
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 11px; font-weight: 700;
   color: var(--ink-faint);
   letter-spacing: 1.5px;
   text-transform: uppercase;
 }
-
 .calc-display {
   background: #0a0a0a;
   color: #fff;
@@ -401,8 +423,7 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
   border-radius: 10px;
   text-align: right;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 32px; font-weight: 700;
   margin-bottom: 10px;
   font-variant-numeric: tabular-nums;
   min-height: 60px;
@@ -413,14 +434,14 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
   text-overflow: ellipsis;
   direction: rtl;
 }
+/* Negative sign in red for clarity */
+.calc-display.negative { color: #fca5a5; }
 .calc-expr {
-  font-size: 12px;
-  color: #71717a;
+  font-size: 12px; color: #71717a;
   margin-bottom: 2px;
   font-family: 'JetBrains Mono', monospace;
   min-height: 14px;
 }
-
 .calc-btn {
   padding: 15px 4px;
   font-size: 20px;
@@ -452,7 +473,6 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
 }
 .modal-bg.show { display: flex; animation: fadeIn 0.15s ease; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
 .modal {
   background: white;
   border-radius: 18px;
@@ -460,25 +480,21 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
   width: 100%;
   max-width: 360px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  animation: modalIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.modal-title {
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 6px;
+@keyframes modalIn {
+  from { transform: scale(0.92); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
-.modal-sub {
-  font-size: 13px;
-  color: var(--ink-soft);
-  margin-bottom: 16px;
-}
+.modal-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+.modal-sub { font-size: 13px; color: var(--ink-soft); margin-bottom: 16px; }
 .modal-input {
   width: 100%;
   padding: 14px 16px;
   border: 2px solid var(--border);
   border-radius: 10px;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 28px; font-weight: 700;
   text-align: center;
   margin-bottom: 16px;
   outline: none;
@@ -487,11 +503,7 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
 }
 .modal-input:focus { border-color: var(--accent-price); }
 .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.modal-btn {
-  padding: 13px;
-  font-size: 15px;
-  font-weight: 700;
-}
+.modal-btn { padding: 13px; font-size: 15px; font-weight: 700; }
 .modal-cancel { background: var(--surface-alt); color: var(--ink-soft); }
 .modal-ok { background: var(--ink); color: white; }
 
@@ -505,8 +517,7 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
   color: white;
   padding: 10px 20px;
   border-radius: 24px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 14px; font-weight: 600;
   opacity: 0;
   transition: all 0.25s ease;
   pointer-events: none;
@@ -521,32 +532,31 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
 @media (max-width: 380px) {
   .display-amount { font-size: 42px; }
   .display-amount .currency { font-size: 22px; vertical-align: 6px; }
-  .quick-btn { font-size: 22px; min-height: 72px; }
+  .quick-btn { font-size: 22px; min-height: 76px; }
+  .quick-btn .qty-badge { font-size: 17px; min-width: 30px; }
   .calc-display { font-size: 26px; }
-  .member-input-value { font-size: 26px; }
   .discount-btn .d-sub.has-credit { font-size: 15px; }
+  .discount-btn.discount-big { font-size: 26px; letter-spacing: 6px; }
+  .ts-date { font-size: 32px; }
+  .member-input-text { font-size: 20px; }
+  .mi-num { font-size: 26px; }
 }
 </style>
 </head>
 <body>
+
 <div class="container">
 
-  <!-- Timestamp -->
+  <!-- Timestamp (年月日、置中、放大) -->
   <div class="timestamp">
-    <div class="ts-time" id="ts-time">--:--:--</div>
-    <div class="ts-date" id="ts-date">----/--/-- ---</div>
+    <button class="sound-toggle" id="soundToggle" aria-label="切換音效">🔊</button>
+    <div class="ts-date" id="ts-date">----/--/--</div>
   </div>
 
-  <!-- Member Number Input -->
+  <!-- Member Number -->
   <div class="member-input" id="memberInput">
-    <div class="member-input-left">
-      <span class="member-input-label">會員編號</span>
-      <span class="member-input-hint" id="memberInputHint">點擊輸入會員編號</span>
-    </div>
-    <div class="member-input-right">
-      <span class="member-input-value" id="memberInputValue">——</span>
-      <span class="member-input-edit">編輯</span>
-    </div>
+    <div class="member-input-text" id="memberInputText">請輸入會員編號</div>
+    <div class="mi-edit">編輯</div>
   </div>
 
   <!-- Total Display -->
@@ -555,7 +565,7 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
       <span class="display-label">合計金額</span>
       <span class="display-qty">共 <strong id="totalQty">0</strong> 件</span>
     </div>
-    <div class="display-amount">
+    <div class="display-amount" id="displayAmount">
       <span class="currency">NT$</span><span id="totalAmount">0</span>
     </div>
     <div class="items-list" id="itemsList"></div>
@@ -583,10 +593,7 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
 
   <!-- Discount Buttons -->
   <div class="grid g-2">
-    <button class="discount-btn" id="shopeeBtn">
-      折扣
-      <span class="d-sub">整筆金額打 9 折</span>
-    </button>
+    <button class="discount-btn discount-big" id="shopeeBtn">折扣</button>
     <button class="discount-btn" id="creditBtn">
       購物金折抵
       <span class="d-sub" id="creditSub">點擊輸入金額</span>
@@ -662,28 +669,108 @@ button:active { transform: scale(0.96); filter: brightness(0.92); }
 <div class="toast" id="toast"></div>
 
 <script>
-// ==================== Timestamp ====================
-const WEEK = ['日','一','二','三','四','五','六'];
+// ==================== Feedback: Sound + Vibrate ====================
+let audioCtx = null;
+let soundOn = true;
+try { if (localStorage.getItem('calc_sound') === 'off') soundOn = false; } catch(e) {}
+
+function getAudio() {
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch(e) { return null; }
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
+  return audioCtx;
+}
+
+function tone(freq, duration, type = 'sine', gain = 0.08) {
+  if (!soundOn) return;
+  const ctx = getAudio(); if (!ctx) return;
+  try {
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    g.gain.setValueAtTime(gain, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+    osc.connect(g); g.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + duration);
+  } catch(e) {}
+}
+function sndClick() { tone(900, 0.025, 'sine', 0.07); }
+function sndAdd()   { tone(1100, 0.03, 'sine', 0.08); setTimeout(() => tone(1500, 0.05, 'sine', 0.08), 35); }
+function sndRemove(){ tone(500, 0.06, 'sine', 0.08); }
+function sndEqual() { tone(880, 0.04, 'sine', 0.08); setTimeout(() => tone(1320, 0.08, 'triangle', 0.08), 45); }
+function sndError() { tone(200, 0.12, 'sawtooth', 0.06); }
+
+function vibrate(ms = 10) {
+  if (navigator.vibrate) { try { navigator.vibrate(ms); } catch(e) {} }
+}
+
+function fbTap()    { vibrate(10); sndClick(); }
+function fbAdd()    { vibrate(18); sndAdd();   }
+function fbRemove() { vibrate(25); sndRemove();}
+function fbEqual()  { vibrate(20); sndEqual(); }
+function fbError()  { vibrate(60); sndError();}
+
+// Sound toggle
+const soundToggle = document.getElementById('soundToggle');
+function updateSoundToggle() {
+  soundToggle.textContent = soundOn ? '🔊' : '🔇';
+  soundToggle.classList.toggle('off', !soundOn);
+}
+updateSoundToggle();
+soundToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  soundOn = !soundOn;
+  try { localStorage.setItem('calc_sound', soundOn ? 'on' : 'off'); } catch(e) {}
+  updateSoundToggle();
+  if (soundOn) { sndClick(); vibrate(15); }
+  else { vibrate(15); }
+});
+
+// ==================== Ripple effect ====================
+document.addEventListener('pointerdown', (e) => {
+  const btn = e.target.closest('button');
+  if (!btn || btn.id === 'soundToggle') return;
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 1.5;
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  ripple.style.width = size + 'px';
+  ripple.style.height = size + 'px';
+  ripple.style.left = x + 'px';
+  ripple.style.top = y + 'px';
+  btn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 550);
+});
+
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.quick-btn, .discount-btn, .calc-add, .calc-eq');
+  if (!btn) return;
+  btn.classList.remove('flash');
+  void btn.offsetWidth;
+  btn.classList.add('flash');
+});
+
+// ==================== Timestamp (年月日 only) ====================
 function updateTime() {
   const d = new Date();
   const p = n => String(n).padStart(2, '0');
-  document.getElementById('ts-time').textContent =
-    `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
   document.getElementById('ts-date').textContent =
-    `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}  星期${WEEK[d.getDay()]}`;
+    `${d.getFullYear()} / ${p(d.getMonth()+1)} / ${p(d.getDate())}`;
 }
 updateTime();
-setInterval(updateTime, 1000);
+setInterval(updateTime, 60000); // 每分鐘更新一次（日期不太會變）
 
 // ==================== State ====================
 let history = [];
-let memberNumber = null; // 4-digit string, e.g. "0123"
+let memberNumber = null;
 
 // ==================== Helpers ====================
-function vibrate(ms = 15) {
-  if (navigator.vibrate) navigator.vibrate(ms);
-}
-
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -691,9 +778,22 @@ function toast(msg) {
   clearTimeout(t._timer);
   t._timer = setTimeout(() => t.classList.remove('show'), 1600);
 }
+function formatMoney(n) { return Math.round(Math.abs(n)).toLocaleString('en-US'); }
 
-function formatMoney(n) {
-  return Math.round(n).toLocaleString('en-US');
+function bumpTotal() {
+  const el = document.getElementById('displayAmount');
+  el.classList.remove('bump');
+  void el.offsetWidth;
+  el.classList.add('bump');
+  setTimeout(() => el.classList.remove('bump'), 200);
+}
+function popBadge(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+  setTimeout(() => el.classList.remove('pop'), 400);
 }
 
 // ==================== Input Modal ====================
@@ -702,23 +802,17 @@ let modalValidator = null;
 
 function openModal(opts) {
   const {
-    title,
-    sub,
+    title, sub,
     defaultValue = '',
     inputType = 'number',
     inputMode = 'decimal',
     maxLength = null,
     placeholder = '0',
-    validator = (v) => {
-      const n = parseFloat(v);
-      return !isNaN(n) && n > 0 ? n : null;
-    },
+    validator = (v) => { const n = parseFloat(v); return !isNaN(n) && n > 0 ? n : null; },
     callback
   } = opts;
-
   document.getElementById('modalTitle').textContent = title;
   document.getElementById('modalSub').textContent = sub;
-
   const input = document.getElementById('modalInput');
   input.type = inputType;
   input.inputMode = inputMode;
@@ -726,24 +820,21 @@ function openModal(opts) {
   if (maxLength) input.setAttribute('maxlength', maxLength);
   else input.removeAttribute('maxlength');
   input.value = defaultValue;
-
   modalCallback = callback;
   modalValidator = validator;
-
   document.getElementById('modal').classList.add('show');
   setTimeout(() => { input.focus(); input.select(); }, 50);
 }
-
 function closeModal() {
   document.getElementById('modal').classList.remove('show');
   modalCallback = null;
   modalValidator = null;
 }
-
 function confirmModal() {
   const rawVal = document.getElementById('modalInput').value;
   const validated = modalValidator ? modalValidator(rawVal) : rawVal;
   if (validated === null || validated === undefined) {
+    fbError();
     toast('請輸入有效的值');
     return;
   }
@@ -751,7 +842,6 @@ function confirmModal() {
   closeModal();
   if (cb) cb(validated);
 }
-
 document.getElementById('modalInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') confirmModal();
   if (e.key === 'Escape') closeModal();
@@ -785,11 +875,12 @@ document.getElementById('confirmModalBg').addEventListener('click', e => {
 // ==================== Order Logic ====================
 function addItem(price, type, label) {
   history.push({ kind: 'item', price, type, label });
-  vibrate();
+  fbAdd();
   render();
+  bumpTotal();
 }
 
-// Member number input
+// Member number
 document.getElementById('memberInput').addEventListener('click', () => {
   openModal({
     title: '會員編號',
@@ -806,7 +897,7 @@ document.getElementById('memberInput').addEventListener('click', () => {
     },
     callback: (val) => {
       memberNumber = val;
-      vibrate();
+      fbAdd();
       render();
       toast(`會員編號：${val}`);
     }
@@ -818,24 +909,27 @@ document.querySelectorAll('.quick-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const p = parseFloat(btn.dataset.price);
     addItem(p, 'preset', `$${p}`);
+    popBadge(`badge-${p}`);
   });
 });
 
-// Discount (formerly 賣貨便9折) toggle
+// Discount toggle
 document.getElementById('shopeeBtn').addEventListener('click', () => {
   const idx = history.findIndex(h => h.kind === 'shopee');
   if (idx >= 0) {
     history.splice(idx, 1);
+    fbRemove();
     toast('已取消折扣');
   } else {
     history.push({ kind: 'shopee' });
+    fbAdd();
     toast('折扣 9 折已套用');
   }
-  vibrate();
   render();
+  bumpTotal();
 });
 
-// Shopping credit deduction
+// Shopping credit
 document.getElementById('creditBtn').addEventListener('click', () => {
   openModal({
     title: '購物金折抵',
@@ -844,14 +938,11 @@ document.getElementById('creditBtn').addEventListener('click', () => {
     inputType: 'number',
     inputMode: 'decimal',
     placeholder: '0',
-    validator: (v) => {
-      const n = parseFloat(v);
-      return !isNaN(n) && n > 0 ? n : null;
-    },
     callback: (val) => {
       history.push({ kind: 'credit', amount: val });
-      vibrate();
+      fbAdd();
       render();
+      bumpTotal();
       toast(`已折抵購物金 $${formatMoney(val)}`);
     }
   });
@@ -860,29 +951,33 @@ document.getElementById('creditBtn').addEventListener('click', () => {
 // Undo
 document.getElementById('undoBtn').addEventListener('click', () => {
   if (history.length === 0) {
+    fbError();
     toast('沒有可復原的項目');
     return;
   }
   const last = history.pop();
-  vibrate(20);
+  fbRemove();
   let msg = '已復原上一筆';
   if (last.kind === 'item') msg = `已移除 ${last.label}`;
   else if (last.kind === 'shopee') msg = '已取消折扣';
   else if (last.kind === 'credit') msg = `已移除購物金 $${formatMoney(last.amount)}`;
+  else if (last.kind === 'deduct') msg = `已取消扣款 $${formatMoney(last.amount)}`;
   toast(msg);
   render();
+  bumpTotal();
 });
 
 // Reset all
 document.getElementById('resetBtn').addEventListener('click', () => {
   if (history.length === 0 && memberNumber === null) {
+    fbError();
     toast('目前沒有資料');
     return;
   }
   showConfirm('清除全部', '確定要清除所有商品、折扣與會員編號嗎？', '確定清除', () => {
     history = [];
     memberNumber = null;
-    vibrate(30);
+    fbRemove();
     render();
     toast('已清除全部');
   });
@@ -891,10 +986,10 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 // ==================== Render ====================
 function render() {
   const groups = {};
-  let subtotal = 0;
-  let totalQty = 0;
+  let subtotal = 0, totalQty = 0;
   let hasShopee = false;
   const credits = [];
+  const deductions = [];
   const presetCounts = { 120: 0, 150: 0, 180: 0, 200: 0 };
 
   history.forEach(h => {
@@ -905,18 +1000,18 @@ function render() {
       subtotal += h.price;
       totalQty++;
       if (h.type === 'preset' && presetCounts[h.price] !== undefined) presetCounts[h.price]++;
-    } else if (h.kind === 'shopee') {
-      hasShopee = true;
-    } else if (h.kind === 'credit') {
-      credits.push(h.amount);
-    }
+    } else if (h.kind === 'shopee') hasShopee = true;
+    else if (h.kind === 'credit') credits.push(h.amount);
+    else if (h.kind === 'deduct') deductions.push(h.amount);
   });
 
   let total = subtotal;
   const shopeeDiscount = hasShopee ? total * 0.1 : 0;
-  if (hasShopee) total = total * 0.9;
+  if (hasShopee) total *= 0.9;
   const creditTotal = credits.reduce((a, b) => a + b, 0);
+  const deductTotal = deductions.reduce((a, b) => a + b, 0);
   total -= creditTotal;
+  total -= deductTotal;
   total = Math.round(total);
   if (total < 0) total = 0;
 
@@ -929,7 +1024,6 @@ function render() {
     el.classList.toggle('has', presetCounts[p] > 0);
   });
 
-  // Items list — no truncation, full display
   const list = document.getElementById('itemsList');
   list.innerHTML = '';
 
@@ -952,17 +1046,21 @@ function render() {
     row.innerHTML = `<span class="label"><span class="tag"></span>折扣（9 折）</span><span class="val">-$${formatMoney(shopeeDiscount)}</span>`;
     list.appendChild(row);
   }
-
   credits.forEach(c => {
     const row = document.createElement('div');
     row.className = 'item-row credit-row';
     row.innerHTML = `<span class="label"><span class="tag"></span>購物金折抵</span><span class="val">-$${formatMoney(c)}</span>`;
     list.appendChild(row);
   });
+  deductions.forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'item-row deduct-row';
+    row.innerHTML = `<span class="label"><span class="tag"></span>扣款</span><span class="val">-$${formatMoney(d)}</span>`;
+    list.appendChild(row);
+  });
 
   document.getElementById('shopeeBtn').classList.toggle('active', hasShopee);
 
-  // Credit button sub-text — red & large when applied
   const creditSub = document.getElementById('creditSub');
   if (credits.length > 0) {
     creditSub.textContent = `已折抵 $${formatMoney(creditTotal)}`;
@@ -972,41 +1070,47 @@ function render() {
     creditSub.classList.remove('has-credit');
   }
 
-  // Member number card
+  // Member number — 連貫顯示
   const mi = document.getElementById('memberInput');
+  const miText = document.getElementById('memberInputText');
   if (memberNumber !== null) {
     mi.classList.add('has-value');
-    document.getElementById('memberInputValue').textContent = memberNumber;
-    document.getElementById('memberInputHint').textContent = '點擊可修改';
+    miText.innerHTML = `會員編號：<span class="mi-num">${memberNumber}</span>`;
   } else {
     mi.classList.remove('has-value');
-    document.getElementById('memberInputValue').textContent = '——';
-    document.getElementById('memberInputHint').textContent = '點擊輸入會員編號';
+    miText.textContent = '請輸入會員編號';
   }
 }
 
-// ==================== Calculator ====================
-const calcState = {
-  display: '0',
-  prev: null,
-  op: null,
-  waitingForNew: false,
-  expr: ''
-};
+// ==================== Calculator (支援負向) ====================
+const calcState = { display: '0', prev: null, op: null, waitingForNew: false, expr: '' };
 
 function updateCalc() {
-  document.getElementById('calcDisplay').textContent = formatCalcDisplay(calcState.display);
+  const disp = document.getElementById('calcDisplay');
+  disp.textContent = formatCalcDisplay(calcState.display);
+  // Highlight negative result in soft red
+  const isNeg = calcState.display.startsWith('-') && calcState.display !== '-0' && parseFloat(calcState.display) < 0;
+  disp.classList.toggle('negative', isNeg);
   document.getElementById('calcExpr').innerHTML = calcState.expr || '&nbsp;';
 }
 
 function formatCalcDisplay(s) {
   if (s === '' || s === '-') return s || '0';
-  const num = parseFloat(s);
+  const negative = s.startsWith('-');
+  const absStr = negative ? s.slice(1) : s;
+  if (absStr === '' || absStr === '.') return negative ? '-' : '0';
+  if (absStr === '0' || absStr === '0.') {
+    // Show "-0" or "-0." literally during input
+    if (s === '-0') return '-0';
+    if (s === '-0.') return '-0.';
+  }
+  const num = parseFloat(absStr);
   if (isNaN(num)) return s;
-  if (s.endsWith('.')) return num.toLocaleString('en-US') + '.';
-  const parts = s.split('.');
+  if (absStr.endsWith('.')) return (negative ? '-' : '') + num.toLocaleString('en-US') + '.';
+  const parts = absStr.split('.');
   const intPart = parseFloat(parts[0]).toLocaleString('en-US');
-  return parts.length > 1 ? `${intPart}.${parts[1]}` : intPart;
+  const result = parts.length > 1 ? `${intPart}.${parts[1]}` : intPart;
+  return (negative ? '-' : '') + result;
 }
 
 function calcNum(n) {
@@ -1019,21 +1123,18 @@ function calcNum(n) {
     else if (calcState.display === '-0' && n !== '.') calcState.display = '-' + n;
     else calcState.display += n;
   }
-  vibrate(8);
+  fbTap();
   updateCalc();
 }
 
 function calcOp(op) {
-  if (calcState.prev !== null && calcState.op && !calcState.waitingForNew) {
-    compute();
-  } else {
-    calcState.prev = parseFloat(calcState.display);
-  }
+  if (calcState.prev !== null && calcState.op && !calcState.waitingForNew) compute();
+  else calcState.prev = parseFloat(calcState.display);
   calcState.op = op;
   calcState.waitingForNew = true;
   const symbols = { '+': '+', '-': '−', '*': '×', '/': '÷' };
   calcState.expr = `${formatCalcDisplay(String(calcState.prev))} ${symbols[op]}`;
-  vibrate(10);
+  fbTap();
   updateCalc();
 }
 
@@ -1054,14 +1155,14 @@ function compute() {
 }
 
 function calcEqual() {
-  if (calcState.op === null || calcState.prev === null) return;
+  if (calcState.op === null || calcState.prev === null) { fbTap(); return; }
   const symbols = { '+': '+', '-': '−', '*': '×', '/': '÷' };
   const expr = `${formatCalcDisplay(String(calcState.prev))} ${symbols[calcState.op]} ${formatCalcDisplay(calcState.display)} =`;
   compute();
   calcState.expr = expr;
   calcState.op = null;
   calcState.waitingForNew = true;
-  vibrate(15);
+  fbEqual();
   updateCalc();
 }
 
@@ -1071,39 +1172,57 @@ function calcClear() {
   calcState.op = null;
   calcState.waitingForNew = false;
   calcState.expr = '';
-  vibrate(10);
+  fbRemove();
   updateCalc();
 }
 
 function calcBackspace() {
-  if (calcState.waitingForNew) return;
+  if (calcState.waitingForNew) { fbTap(); return; }
   if (calcState.display.length <= 1 || (calcState.display.length === 2 && calcState.display.startsWith('-'))) {
     calcState.display = '0';
   } else {
     calcState.display = calcState.display.slice(0, -1);
   }
-  vibrate(8);
+  fbTap();
   updateCalc();
 }
 
+// ± 支援在「0」的情況下啟用負數輸入
 function toggleSign() {
-  if (calcState.display === '0') return;
-  if (calcState.display.startsWith('-')) calcState.display = calcState.display.slice(1);
-  else calcState.display = '-' + calcState.display;
-  vibrate(8);
+  if (calcState.waitingForNew) {
+    calcState.display = '-0';
+    calcState.waitingForNew = false;
+  } else if (calcState.display === '0') {
+    calcState.display = '-0';
+  } else if (calcState.display.startsWith('-')) {
+    calcState.display = calcState.display.slice(1);
+  } else {
+    calcState.display = '-' + calcState.display;
+  }
+  fbTap();
   updateCalc();
 }
 
-// 計算機加入訂單 — 名稱為「其他」
+// 加入 — 現在接受負值，負值視為「扣款」
 function addCalcToOrder() {
   const val = parseFloat(calcState.display);
-  if (isNaN(val) || val <= 0) {
+  if (isNaN(val) || val === 0) {
+    fbError();
     toast('計算結果無效或為 0');
     return;
   }
-  addItem(val, 'manual', `其他 $${val}`);
+  if (val > 0) {
+    addItem(val, 'manual', `其他 $${val}`);
+    toast(`已加入 $${formatMoney(val)}`);
+  } else {
+    const absVal = Math.abs(val);
+    history.push({ kind: 'deduct', amount: absVal });
+    fbAdd();
+    render();
+    bumpTotal();
+    toast(`已扣款 $${formatMoney(absVal)}`);
+  }
   calcClear();
-  toast(`已加入 $${formatMoney(val)}`);
 }
 
 // ==================== Init ====================
