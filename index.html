@@ -47,11 +47,11 @@ body {
 
 .container { max-width: 520px; margin: 0 auto; }
 
-/* ==================== Timestamp (放大、置中、拿掉 REC) ==================== */
+/* ==================== Timestamp (緊湊) ==================== */
 .timestamp {
   background: var(--bg);
   color: #fff;
-  padding: 26px 16px;
+  padding: 22px 16px;
   border-radius: 14px;
   text-align: center;
   margin-bottom: 10px;
@@ -62,12 +62,11 @@ body {
   font-family: 'JetBrains Mono', monospace;
   font-size: 40px;
   font-weight: 800;
-  letter-spacing: 2px;
+  letter-spacing: 0;
   font-variant-numeric: tabular-nums;
-  line-height: 1.1;
+  line-height: 1;
 }
 
-/* Sound toggle — 縮小 & 嵌在時間戳右上角 */
 .sound-toggle {
   position: absolute;
   top: 8px;
@@ -88,7 +87,7 @@ body {
 }
 .sound-toggle.off { opacity: 0.4; }
 
-/* ==================== Member Input (連貫顯示、放大) ==================== */
+/* ==================== Member Input ==================== */
 .member-input {
   background: var(--surface);
   border-radius: 14px;
@@ -238,7 +237,7 @@ body {
 .item-row.credit-row .label,
 .item-row.deduct-row .label { color: var(--accent-danger); font-weight: 700; }
 
-/* ==================== Button Base with effects ==================== */
+/* ==================== Button Base ==================== */
 button {
   border: none;
   padding: 16px 8px;
@@ -272,7 +271,8 @@ button:active {
   to { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
 }
 .action-btn .ripple,
-.calc-num .ripple { background: rgba(37, 99, 235, 0.25); }
+.calc-num .ripple,
+.calc-fn .ripple { background: rgba(37, 99, 235, 0.2); }
 .action-btn.reset .ripple { background: rgba(220, 38, 38, 0.25); }
 button > * { position: relative; z-index: 1; }
 
@@ -434,7 +434,6 @@ button.flash { animation: pressGlow 0.4s ease-out; }
   text-overflow: ellipsis;
   direction: rtl;
 }
-/* Negative sign in red for clarity */
 .calc-display.negative { color: #fca5a5; }
 .calc-expr {
   font-size: 12px; color: #71717a;
@@ -444,35 +443,51 @@ button.flash { animation: pressGlow 0.4s ease-out; }
 }
 .calc-btn {
   padding: 15px 4px;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   font-family: 'JetBrains Mono', monospace;
 }
 .calc-num { background: white; color: var(--ink); border: 1px solid var(--border); }
 .calc-op { background: var(--ink); color: white; }
 .calc-eq { background: var(--accent-success); color: white; }
-.calc-fn { background: var(--surface-alt); color: var(--ink-soft); font-size: 16px; }
+.calc-fn {
+  background: var(--surface-alt);
+  color: var(--ink-soft);
+  font-size: 22px;
+  font-weight: 800;
+}
+/* Unicode 符號字體視覺上較小，額外放大 */
+.calc-fn.symbol {
+  font-size: 28px;
+  font-weight: 700;
+}
 .calc-add {
   background: linear-gradient(180deg, #22d3ee 0%, var(--accent-calc) 100%);
   color: white;
   font-family: 'Noto Sans TC', sans-serif;
   font-size: 15px;
+  font-weight: 700;
 }
 
-/* ==================== Modal ==================== */
+/* ==================== Modal (用 opacity 而非 display:none 以便彈鍵盤) ==================== */
 .modal-bg {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.55);
   backdrop-filter: blur(4px);
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
 }
-.modal-bg.show { display: flex; animation: fadeIn 0.15s ease; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal-bg.show {
+  opacity: 1;
+  pointer-events: auto;
+}
 .modal {
   background: white;
   border-radius: 18px;
@@ -480,11 +495,13 @@ button.flash { animation: pressGlow 0.4s ease-out; }
   width: 100%;
   max-width: 360px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  animation: modalIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: scale(0.92);
+  opacity: 0;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.18s ease;
 }
-@keyframes modalIn {
-  from { transform: scale(0.92); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+.modal-bg.show .modal {
+  transform: scale(1);
+  opacity: 1;
 }
 .modal-title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
 .modal-sub { font-size: 13px; color: var(--ink-soft); margin-bottom: 16px; }
@@ -537,9 +554,11 @@ button.flash { animation: pressGlow 0.4s ease-out; }
   .calc-display { font-size: 26px; }
   .discount-btn .d-sub.has-credit { font-size: 15px; }
   .discount-btn.discount-big { font-size: 26px; letter-spacing: 6px; }
-  .ts-date { font-size: 32px; }
+  .ts-date { font-size: 34px; }
   .member-input-text { font-size: 20px; }
   .mi-num { font-size: 26px; }
+  .calc-fn { font-size: 20px; }
+  .calc-fn.symbol { font-size: 26px; }
 }
 </style>
 </head>
@@ -547,7 +566,7 @@ button.flash { animation: pressGlow 0.4s ease-out; }
 
 <div class="container">
 
-  <!-- Timestamp (年月日、置中、放大) -->
+  <!-- Timestamp (年月日、緊湊) -->
   <div class="timestamp">
     <button class="sound-toggle" id="soundToggle" aria-label="切換音效">🔊</button>
     <div class="ts-date" id="ts-date">----/--/--</div>
@@ -616,8 +635,8 @@ button.flash { animation: pressGlow 0.4s ease-out; }
     <div class="calc-display" id="calcDisplay">0</div>
     <div class="grid g-4" style="margin-bottom: 0;">
       <button class="calc-btn calc-fn" onclick="calcClear()">AC</button>
-      <button class="calc-btn calc-fn" onclick="calcBackspace()">⌫</button>
-      <button class="calc-btn calc-fn" onclick="toggleSign()">±</button>
+      <button class="calc-btn calc-fn symbol" onclick="calcBackspace()">⌫</button>
+      <button class="calc-btn calc-fn symbol" onclick="toggleSign()">±</button>
       <button class="calc-btn calc-op" onclick="calcOp('/')">÷</button>
       <button class="calc-btn calc-num" onclick="calcNum('7')">7</button>
       <button class="calc-btn calc-num" onclick="calcNum('8')">8</button>
@@ -714,7 +733,6 @@ function fbRemove() { vibrate(25); sndRemove();}
 function fbEqual()  { vibrate(20); sndEqual(); }
 function fbError()  { vibrate(60); sndError();}
 
-// Sound toggle
 const soundToggle = document.getElementById('soundToggle');
 function updateSoundToggle() {
   soundToggle.textContent = soundOn ? '🔊' : '🔇';
@@ -756,15 +774,15 @@ document.addEventListener('click', (e) => {
   btn.classList.add('flash');
 });
 
-// ==================== Timestamp (年月日 only) ====================
+// ==================== Timestamp (年月日、緊湊) ====================
 function updateTime() {
   const d = new Date();
   const p = n => String(n).padStart(2, '0');
   document.getElementById('ts-date').textContent =
-    `${d.getFullYear()} / ${p(d.getMonth()+1)} / ${p(d.getDate())}`;
+    `${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())}`;
 }
 updateTime();
-setInterval(updateTime, 60000); // 每分鐘更新一次（日期不太會變）
+setInterval(updateTime, 60000);
 
 // ==================== State ====================
 let history = [];
@@ -797,6 +815,8 @@ function popBadge(id) {
 }
 
 // ==================== Input Modal ====================
+// 注意：focus() 必須在 user gesture 內同步呼叫，iOS 才會彈出鍵盤。
+// Modal 背景使用 opacity 而非 display:none，避免 focus 目標仍被視為隱藏。
 let modalCallback = null;
 let modalValidator = null;
 
@@ -822,11 +842,17 @@ function openModal(opts) {
   input.value = defaultValue;
   modalCallback = callback;
   modalValidator = validator;
+
+  // 顯示 modal（opacity 變化，不是 display）
   document.getElementById('modal').classList.add('show');
-  setTimeout(() => { input.focus(); input.select(); }, 50);
+  // 立即 focus（在 user gesture 同步內）
+  input.focus();
+  try { input.select(); } catch(e) {}
 }
 function closeModal() {
   document.getElementById('modal').classList.remove('show');
+  const input = document.getElementById('modalInput');
+  input.blur();
   modalCallback = null;
   modalValidator = null;
 }
@@ -1070,7 +1096,6 @@ function render() {
     creditSub.classList.remove('has-credit');
   }
 
-  // Member number — 連貫顯示
   const mi = document.getElementById('memberInput');
   const miText = document.getElementById('memberInputText');
   if (memberNumber !== null) {
@@ -1082,13 +1107,12 @@ function render() {
   }
 }
 
-// ==================== Calculator (支援負向) ====================
+// ==================== Calculator ====================
 const calcState = { display: '0', prev: null, op: null, waitingForNew: false, expr: '' };
 
 function updateCalc() {
   const disp = document.getElementById('calcDisplay');
   disp.textContent = formatCalcDisplay(calcState.display);
-  // Highlight negative result in soft red
   const isNeg = calcState.display.startsWith('-') && calcState.display !== '-0' && parseFloat(calcState.display) < 0;
   disp.classList.toggle('negative', isNeg);
   document.getElementById('calcExpr').innerHTML = calcState.expr || '&nbsp;';
@@ -1099,11 +1123,8 @@ function formatCalcDisplay(s) {
   const negative = s.startsWith('-');
   const absStr = negative ? s.slice(1) : s;
   if (absStr === '' || absStr === '.') return negative ? '-' : '0';
-  if (absStr === '0' || absStr === '0.') {
-    // Show "-0" or "-0." literally during input
-    if (s === '-0') return '-0';
-    if (s === '-0.') return '-0.';
-  }
+  if (s === '-0') return '-0';
+  if (s === '-0.') return '-0.';
   const num = parseFloat(absStr);
   if (isNaN(num)) return s;
   if (absStr.endsWith('.')) return (negative ? '-' : '') + num.toLocaleString('en-US') + '.';
@@ -1187,7 +1208,6 @@ function calcBackspace() {
   updateCalc();
 }
 
-// ± 支援在「0」的情況下啟用負數輸入
 function toggleSign() {
   if (calcState.waitingForNew) {
     calcState.display = '-0';
@@ -1203,7 +1223,6 @@ function toggleSign() {
   updateCalc();
 }
 
-// 加入 — 現在接受負值，負值視為「扣款」
 function addCalcToOrder() {
   const val = parseFloat(calcState.display);
   if (isNaN(val) || val === 0) {
